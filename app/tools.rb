@@ -77,5 +77,20 @@ module Clifford
       [r0, a0, b0]
     end
 
+    def self.eea(p,m_10)
+       a = [p, m_10]
+       y = [0, 1]
+       i = 1
+
+       while a[i] > Integer.sqrt(p/2)
+         q = a[i-1] / a[i]
+         a << (a[i-1] - q * a[i])
+         y << (y[i-1] + q * y[i])
+         i += 1
+       end
+
+       Rational(a[i],y[i])
+     end
+
   end
 end

@@ -6,35 +6,35 @@ class TestSWHE< Minitest::Test
     l = 256
     m_10 = 23
 
-    swhe = Clifford::SWHE.new l
-    c = swhe.encrypt(m_10)
+    sk = Clifford::SWHE.new l
+    c = sk.encrypt(m_10)
 
-    assert_equal m_10, swhe.decrypt(c)
+    assert_equal m_10, sk.decrypt(c)
   end
 
   def test_homomorphic_addition
     l = 256
 
     m1_10 = 16
-    m2_10 = 19
+    m2_10 = 24
 
-    swhe = Clifford::SWHE.new l
-    c1 = swhe.encrypt(m1_10)
-    c2 = swhe.encrypt(m2_10)
+    sk = Clifford::SWHE.new l
+    c1 = sk.encrypt(m1_10)
+    c2 = sk.encrypt(m2_10)
 
-    assert_equal m1_10 + m2_10, swhe.decrypt(swhe.add(c1,c2))
+    assert_equal m1_10 + m2_10, sk.decrypt(sk.add(c1,c2))
   end
 
   def test_homomorphic_scalar_div
     l = 256
 
-    m_10 = 32
+    m_10 = 33
     s = 4
 
-    swhe = Clifford::SWHE.new l
-    c = swhe.encrypt(m_10)
+    sk = Clifford::SWHE.new l
+    c = sk.encrypt(m_10)
 
-    assert_equal m_10 / s, swhe.decrypt(swhe.sdiv(c,s))
+    assert_equal Rational(m_10,s), sk.decrypt(sk.sdiv(c,s))
   end
 
   def test_homomorphic_median
@@ -44,20 +44,22 @@ class TestSWHE< Minitest::Test
     m2_10 = 18
     m3_10 = 26
     m4_10 = 11
+    m5_10 = 27
 
-    swhe = Clifford::SWHE.new l
+    sk = Clifford::SWHE.new l
 
-    c1 = swhe.encrypt(m1_10)
-    c2 = swhe.encrypt(m2_10)
-    c3 = swhe.encrypt(m3_10)
-    c4 = swhe.encrypt(m4_10)
+    c1 = sk.encrypt(m1_10)
+    c2 = sk.encrypt(m2_10)
+    c3 = sk.encrypt(m3_10)
+    c4 = sk.encrypt(m4_10)
+    c5 = sk.encrypt(m5_10)
 
-    s = 4
+    s = 5
 
-    expected_value = (m1_10 + m2_10 + m3_10 + m4_10) / s
+    expected_value = Rational(m1_10 + m2_10 + m3_10 + m4_10 + m5_10,s)
 
-    csum = c1.plus(c2).plus(c3).plus(c4)
+    csum = c1.plus(c2).plus(c3).plus(c4).plus(c5)
 
-    assert_equal expected_value, swhe.decrypt(swhe.sdiv(csum,s))
+    assert_equal expected_value, sk.decrypt(sk.sdiv(csum,s))
   end
 end

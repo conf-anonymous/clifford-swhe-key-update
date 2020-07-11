@@ -24,7 +24,8 @@ module Clifford
 
     def decrypt(c)
       m = k1.inverse.gp(c).gp(k2.inverse)
-      Tools.multivector_to_number(m,b,q,g) % q
+      m_10 = Tools.multivector_to_number(m,b,q,g) % q
+      Tools.eea(q,m_10)
     end
 
     def add(c1,c2)
